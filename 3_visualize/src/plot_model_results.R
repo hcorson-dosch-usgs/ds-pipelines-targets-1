@@ -1,8 +1,7 @@
 
 library(readr)
 
-plot_rmses <- function(in_file, out_file) {
-  eval_data <- readr::read_csv(in_file, col_types = 'iccdcid')
+plot_rmses <- function(data, out_file) {
   
   # Create a plot
   png(file = out_file, width = 8, height = 10, res = 200, units = 'in')
@@ -21,7 +20,7 @@ plot_rmses <- function(in_file, out_file) {
     mutate(dl = -pgdl, pb = 0, n_prof = n_profs)
   
   for (mod in c('pb','dl','pgdl')){
-    mod_data <- filter(eval_data, model_type == mod)
+    mod_data <- filter(data, model_type == mod)
     mod_profiles <- unique(mod_data$n_prof)
     for (mod_profile in mod_profiles){
       d <- filter(mod_data, n_prof == mod_profile) %>% summarize(y0 = min(rmse), y1 = max(rmse), col = unique(col))
@@ -46,5 +45,5 @@ plot_rmses <- function(in_file, out_file) {
   text(2.3, 1.1, 'Process-Based', pos = 4, cex = 1.1)
   
   dev.off()
-  
+  return(out_file)
 }
